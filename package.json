@@ -1,0 +1,22 @@
+{
+  "name": "playwright-practica",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Luiszeaa25/Playwright-practica.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Luiszeaa25/Playwright-practica/issues"
+  },
+  "homepage": "https://github.com/Luiszeaa25/Playwright-practica#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.60.0",
+    "@types/node": "^25.9.2"
+  }
+}
