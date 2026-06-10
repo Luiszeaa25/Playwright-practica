@@ -1,3 +1,11 @@
+<h1 align="center">OrangeHRM Test Automation with Playwright Luis Alfredo Sánchez Zea</h1>
+<h3 align="center">Automation framework built with Playwright + TypeScript</h3>
+
+
+<p align="left">
+</p>
+
+
 <h3 align="left">Languages and Tools:</h3>
 <p align="left">
 
