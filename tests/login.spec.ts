@@ -1,24 +1,13 @@
-import { test } from "@playwright/test";
 import { LoginPage } from "../page/LoginPage";
-import { fakerEN_US } from "@faker-js/faker";
+import { ValidUser } from "../utils/testdata";
+import { test } from "../fixtures/customFixtures";
 
-test ('Login test', async ({page}) => {
-    const loginPage = new LoginPage(page);
 
-    await loginPage.gotoLoginPage();
-    await loginPage.validLogin('Admin','admin123');
-    await loginPage.loginSuccess();
-
+test ('Login test', async ({loggedPage}) => {
 });
-
-test ('Login no exitoso', async ({page}) => {
-    const loginPage = new LoginPage(page);
-    await loginPage.gotoLoginPage();
-    await loginPage.validLogin(fakerEN_US.person.firstName(), fakerEN_US.string.alphanumeric(6));
-    await loginPage.loginUnsuccesful();
+test('Login no exitoso', async ({ invalidLoginPage }) => {
 });
-
-test ('Hipervinculos',async ({page}) =>{
+test('Hipervinculos', async ({ page }) =>{
     const loginPage = new LoginPage(page);
     await loginPage.gotoLoginPage();
     await loginPage.validateLinkedin();
@@ -26,5 +15,5 @@ test ('Hipervinculos',async ({page}) =>{
     await loginPage.validateTwitter();
     await loginPage.validateYoutube();
     await loginPage.validateOrangeHRM();
-
+    await loginPage.validateForgotPassword();
 } );
