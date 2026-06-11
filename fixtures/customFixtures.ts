@@ -1,6 +1,7 @@
 import { test as base, Page, expect } from "@playwright/test";
 import { LoginPage } from "../page/LoginPage";
 import { InvalidUser, ValidUser } from "../utils/testdata"; 
+import { ViewSystemUsers } from "../page/ViewSystemUsers";
 
 
 
@@ -8,6 +9,7 @@ interface Fixtures {
     loggedPage: Page;
     invalidLoginPage: Page;
     loginPageLoggedIn: LoginPage;
+    AdminValidation: Page;
 }
 export const test = base.extend<Fixtures>({
 
@@ -35,7 +37,14 @@ export const test = base.extend<Fixtures>({
 
         const loginPage = new LoginPage(loggedPage);
         await use (loginPage);
+    },
+
+    AdminValidation: async ({ page }, use)=> {
+        const viewsystemusers = new ViewSystemUsers(page);
+        await viewsystemusers.clickAdminLink()
+        await use(page);
     }
+
 
 
 });
