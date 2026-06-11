@@ -1,0 +1,17 @@
+{
+
+    "validUser":{
+        "username": "Admin",
+        "password": "admin123"
+    },
+
+    "footerLinks": {
+
+        "linkedin": "linkedin.com/company/orangehrm",
+        "facebook": "facebook.com/OrangeHRM/",
+        "twitter": "twitter.com/orangehrm?lang=en",
+        "youtube": "youtube.com/c/OrangeHRMInc",
+        "orangehrm": "orangehrm.com"
+    }
+
+}
