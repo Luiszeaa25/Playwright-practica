@@ -3,11 +3,11 @@ import { ValidUser } from "../utils/testdata";
 import { test } from "../fixtures/customFixtures";
 
 
-test ('Login test', async ({loggedPage}) => {
+test ('Validar login exitoso', async ({loggedPage}) => {
 });
-test('Login no exitoso', async ({ invalidLoginPage }) => {
+test('Validar login no exitoso', async ({ invalidLoginPage }) => {
 });
-test('Hipervinculos', async ({ page }) =>{
+test('Validación de hipervinculos de la pagina de login', async ({ page }) =>{
     const loginPage = new LoginPage(page);
     await loginPage.gotoLoginPage();
     await loginPage.validateLinkedin();
