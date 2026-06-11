@@ -1,4 +1,5 @@
 import { Page, Locator, expect } from "@playwright/test";
+import { FooterLinks } from "../utils/testdata";
 
 
 export class LoginPage { 
@@ -13,9 +14,7 @@ export class LoginPage {
     private readonly twitterLink: Locator;
     private readonly youtubeLink: Locator;
     private readonly oragehrmLink: Locator;
-
-
-
+    private readonly forgotpass: Locator;
 
     constructor(page:Page){
         this.page = page;
@@ -23,17 +22,18 @@ export class LoginPage {
         this.password = page.getByRole('textbox', { name: 'Password' });
         this.loginButton = page.getByRole('button', { name: 'Login' });
         this.loginError = page.getByRole('alert', { name: "" });
-        this.linkedinLink = this.page.locator('a[href*="linkedin.com/company/orangehrm/mycompany/"]');
-        this.facebookLink = this.page.locator('a[href*="facebook.com/OrangeHRM/"]')
-        this.twitterLink = this.page.locator('a[href*="twitter.com/orangehrm?lang=en"]')
-        this.youtubeLink = this.page.locator('a[href*="youtube.com/c/OrangeHRMInc"]')
-        this.oragehrmLink = this.page.locator('a[href*="orangehrm.com"]')
+        this.linkedinLink = this.page.locator('a[href *= "linkedin.com"]');
+        this.facebookLink = this.page.locator('a[href*="facebook.com"]');
+        this.twitterLink = this.page.locator('a[href*="twitter.com"], a[href*="x.com"]');
+        this.youtubeLink = this.page.locator('a[href*="youtube.com"]');
+        this.oragehrmLink = this.page.locator('a[href*="orangehrm.com"]');
+        this.forgotpass = page.getByText('Forgot your password?');
 
 
     } 
     async gotoLoginPage (){
 
-        await this.page.goto('https://opensource-demo.orangehrmlive.com/');
+        await this.page.goto('/web/index.php/auth/login');
     } 
 
     async validLogin(user: string, pass: string){
@@ -45,7 +45,7 @@ export class LoginPage {
 
     async loginSuccess(){
 
-        await this.page.waitForURL('https://opensource-demo.orangehrmlive.com/web/index.php/dashboard/index');
+        await expect (this.page).toHaveURL('/web/index.php/dashboard/index');
     }
 
 
@@ -54,52 +54,54 @@ export class LoginPage {
         await expect(this.loginError).toBeVisible();
     }
 
+    private async VerifyLinkNewTab(locator: Locator, expectedTargetUrl: string){
+
+        await locator.scrollIntoViewIfNeeded();
+        const [newPage] = await Promise.all([
+            this.page.context().waitForEvent('page'),
+            locator.click({ force: true })
+        ]);
+        await newPage.waitForLoadState('domcontentloaded');
+        let escapedUrl = expectedTargetUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        escapedUrl = escapedUrl.replace('twitter\\.com', '(twitter\\.com|x\\.com)');
+        await expect(newPage).toHaveURL(new RegExp(escapedUrl), { timeout: 30000 });
+
+        await newPage.close();
+    }
+
     async validateLinkedin (){
 
-        const pagePromise = this.page.context().waitForEvent('page');
-        await this.linkedinLink.click();
-        const newPage = await pagePromise;
-        await newPage.waitForLoadState('domcontentloaded');
-        await expect(newPage).toHaveURL(/linkedin\.com/);
+        await this.VerifyLinkNewTab(this.linkedinLink, FooterLinks.linkedin)
     }
 
     async validateFacebook() {
 
-        const pagePromise = this.page.context().waitForEvent('page');
-        await this.facebookLink.click();
-        const newPage = await pagePromise;
-        await newPage.waitForLoadState('domcontentloaded');
-        await expect(newPage).toHaveURL(/facebook\.com/);
+        await this.VerifyLinkNewTab(this.facebookLink, FooterLinks.facebook);
     }
 
     async validateTwitter() {
 
-        const url = await this.twitterLink.getAttribute('href');
-        if (!url) throw new Error("No se pudo obtener el href de Twitter");
-        
-        await this.page.goto(url);
-        await this.page.waitForLoadState('domcontentloaded');
-        await expect(this.page).toHaveURL(/(twitter\.com|x\.com)/);
-        await this.page.goBack();
-        await this.page.waitForLoadState('domcontentloaded');
+        await this.VerifyLinkNewTab(this.twitterLink, FooterLinks.twitter)
     }
 
     async validateYoutube() {
 
-        const pagePromise = this.page.context().waitForEvent('page');
-        await this.youtubeLink.click();
-        const newPage = await pagePromise;
-        await newPage.waitForLoadState('domcontentloaded');
-        await expect(newPage).toHaveURL(/youtube\.com/);
+        await this.VerifyLinkNewTab(this.youtubeLink, FooterLinks.youtube)
+
     }
 
     async validateOrangeHRM() {
 
-        const pagePromise = this.page.context().waitForEvent('page');
-        await this.oragehrmLink.click();
-        const newPage = await pagePromise;
-        await newPage.waitForLoadState('domcontentloaded');
-        await expect(newPage).toHaveURL(/orangehrm\.com/);
+        await this.VerifyLinkNewTab(this.oragehrmLink, FooterLinks.orangehrm)
+
+    }
+
+    async validateForgotPassword(){
+
+        await this.forgotpass.click()
+        await expect(this.page).toHaveURL('/web/index.php/auth/requestPasswordResetCode')   
     }
 
 }
+
+
